@@ -1,4 +1,4 @@
-defmodule Helpers do
+defmodule AOC.Helpers do
   def get_lines(filename) do
     filename
     |> File.read!()

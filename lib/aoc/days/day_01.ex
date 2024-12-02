@@ -1,4 +1,6 @@
-defmodule Day01 do
+defmodule AOC.Days.Day01 do
+  alias AOC.Helpers
+
   def sample1(input \\ "day01/sample.txt") do
     input
     |> Helpers.get_lines()
