@@ -33,7 +33,7 @@ defmodule Mix.Tasks.Aoc do
   end
 
   defp run_solution(day, part) do
-    module = String.to_existing_atom("Elixir.Day#{day}")
+    module = String.to_existing_atom("Elixir.AOC.Days.Day#{day}")
     result = apply(module, part, [])
     IO.puts("Result for Day#{day} #{part}: #{result}")
   end
