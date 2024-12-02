@@ -45,7 +45,7 @@ dayXX/
 ## 🎯 Progress
 
 - [x] Day 1: Sorting Pairs
-- [ ] Day 2: Coming soon!
+- [x] Day 2: Pattern Matching
 - [ ] More adventures await...
 
 ## 🌠 Running Tests
