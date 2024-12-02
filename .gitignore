@@ -20,14 +20,14 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-test-*.tar
+aoc2024-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
 
-.elixir_ls/
+# Ignore input files
+/priv/inputs/**/input.txt
+/priv/inputs/**/sample.txt
 
-/test/
-
-input.txt
-sample.txt
+# Elixir Language Server
+/.elixir_ls/
