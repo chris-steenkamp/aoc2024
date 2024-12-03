@@ -34,7 +34,18 @@ defmodule AOC.Days.Day03 do
   end
 
   def solve_part2(lines) do
-    # TODO: Implement solution
-    0
+    lines
+    # join all the lines together to get one big memory map
+    |> Enum.join()
+    # put the single line into an array to be compatible with part 1 logic
+    |> then(fn x -> [x] end)
+    # find all substrings that start with don't() and end with do() and replace them
+    # the search needs to be nongreedy to capture the smallest groups possible
+    # the dash isn't necessary, I added it because I thought the input might contain
+    # data which would form a mul(x,y) operation after removing the matched text.
+    # The last part (?:do()|$) can also be reduced to just do() for the given input
+    # but this way it can handle don't() that isn't followed by a do() (e.g end of input)
+    |> Enum.map(&String.replace(&1, ~r/(don't\(\).*?(?:do\(\)|$))/, "-"))
+    |> solve_part1()
   end
 end
