@@ -46,6 +46,7 @@ dayXX/
 
 - [x] Day 1: Sorting Pairs
 - [x] Day 2: Pattern Matching
+- [x] Day 3: Regex and Pattern Filtering
 - [ ] More adventures await...
 
 ## 🌠 Running Tests
