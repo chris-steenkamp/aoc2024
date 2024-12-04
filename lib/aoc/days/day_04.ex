@@ -26,71 +26,44 @@ defmodule AOC.Days.Day04 do
   end
 
   def solve_part1(lines) do
-    h = length(lines)
     w = String.length(Enum.at(lines, 0))
+    grid = lines |> Enum.join()
 
-    test = lines |> Enum.join()
+    # Define the 8 possible directions to check
+    directions = [
+      # right
+      1,
+      # left
+      -1,
+      # down
+      w,
+      # up
+      -w,
+      # down-right
+      w + 1,
+      # down-left
+      w - 1,
+      # up-right
+      -(w - 1),
+      # up-left
+      -(w + 1)
+    ]
 
-    f = fn i ->
-      String.at(test, i + 1) == "M" and
-        String.at(test, i + 2) == "A" and
-        String.at(test, i + 3) == "S"
+    # Check a complete XMAS pattern in a given direction
+    check_xmas = fn pos, dir ->
+      String.at(grid, pos + dir) == "M" and
+        String.at(grid, pos + 2 * dir) == "A" and
+        String.at(grid, pos + 3 * dir) == "S"
     end
 
-    b = fn i ->
-      String.at(test, i - 1) == "M" and
-        String.at(test, i - 2) == "A" and
-        String.at(test, i - 3) == "S"
-    end
-
-    u = fn i ->
-      String.at(test, i + -1 * h) == "M" and
-        String.at(test, i + -2 * h) == "A" and
-        String.at(test, i + -3 * h) == "S"
-    end
-
-    d = fn i ->
-      String.at(test, i + 1 * h) == "M" and
-        String.at(test, i + 2 * h) == "A" and
-        String.at(test, i + 3 * h) == "S"
-    end
-
-    ur = fn i ->
-      String.at(test, i - (h - 1)) == "M" and
-        String.at(test, i - 2 * (h - 1)) == "A" and
-        String.at(test, i - 3 * (h - 1)) == "S"
-    end
-
-    # Diagonal up-left (offset pattern: -18, -12, -6)
-    ul = fn i ->
-      String.at(test, i - (h + 1)) == "M" and
-        String.at(test, i - 2 * (h + 1)) == "A" and
-        String.at(test, i - 3 * (h + 1)) == "S"
-    end
-
-    # Diagonal down-right (offset pattern: +8, +16, +24)
-    dr = fn i ->
-      String.at(test, i + (h - 1)) == "M" and
-        String.at(test, i + 2 * (h - 1)) == "A" and
-        String.at(test, i + 3 * (h - 1)) == "S"
-    end
-
-    # Diagonal down-left (offset pattern: +6, +12, +18)
-    dl = fn i ->
-      String.at(test, i + (h + 1)) == "M" and
-        String.at(test, i + 2 * (h + 1)) == "A" and
-        String.at(test, i + 3 * (h + 1)) == "S"
-    end
-
-    checker = fn i ->
-      Enum.count([f.(i), b.(i), u.(i), d.(i), ur.(i), ul.(i), dr.(i), dl.(i)], & &1)
-    end
-
-    test
+    # For each X position, check all 8 directions
+    grid
     |> String.graphemes()
     |> Enum.with_index()
-    |> Enum.filter(fn {char, _index} -> char == "X" end)
-    |> Enum.map(fn {_char, index} -> checker.(index) end)
+    |> Enum.filter(fn {char, _} -> char == "X" end)
+    |> Enum.map(fn {_, pos} ->
+      Enum.count(directions, &check_xmas.(pos, &1))
+    end)
     |> Enum.sum()
   end
 
