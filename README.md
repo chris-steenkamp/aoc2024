@@ -47,7 +47,18 @@ dayXX/
 - [x] Day 1: Sorting Pairs
 - [x] Day 2: Pattern Matching
 - [x] Day 3: Regex and Pattern Filtering
+- [x] Day 4: Grid Pattern Search (XMAS)
 - [ ] More adventures await...
+
+## 🧠 Functional Programming Concepts
+
+Throughout this journey, we're learning and applying functional programming concepts in Elixir:
+
+- **Pattern Matching**: Using Elixir's powerful pattern matching for data extraction and flow control
+- **Immutability**: Working with immutable data structures to maintain program state
+- **Higher-Order Functions**: Using functions like `map`, `reduce`, and `filter` for data transformation
+- **Pipeline Operator**: Chaining operations with the `|>` operator for cleaner code
+- **Recursion**: Solving problems through recursive function calls instead of loops
 
 ## 🌠 Running Tests
 

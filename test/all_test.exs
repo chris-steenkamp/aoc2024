@@ -67,14 +67,15 @@ defmodule AOC.Days.Day04Test do
 
   test "test the sample inputs" do
     assert Day04.sample1() == 18
-    assert Day04.sample2() == 0
+    assert Day04.sample2() == 9
   end
 
   @tag :real
   test "test the real inputs" do
     assert Day04.part1() < 2636
     assert Day04.part1() > 1272
-    assert Day04.part1() == 0
-    assert Day04.part2() == 0
+    assert Day04.part1() == 2618
+    assert Day04.part2() > 1488
+    assert Day04.part2() == 2011
   end
 end
