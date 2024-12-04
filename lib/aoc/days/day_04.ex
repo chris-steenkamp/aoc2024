@@ -26,43 +26,47 @@ defmodule AOC.Days.Day04 do
   end
 
   def solve_part1(lines) do
+    h = length(lines)
     w = String.length(Enum.at(lines, 0))
-    grid = lines |> Enum.join()
 
-    # Define the 8 possible directions to check
-    directions = [
-      # right
-      1,
-      # left
-      -1,
-      # down
-      w,
-      # up
-      -w,
-      # down-right
-      w + 1,
-      # down-left
-      w - 1,
-      # up-right
-      -(w - 1),
-      # up-left
-      -(w + 1)
-    ]
+    # Find all X positions as {row, col} tuples
+    x_positions = 
+      for row <- 0..(h-1),
+          col <- 0..(w-1),
+          String.at(Enum.at(lines, row), col) == "X",
+          do: {row, col}
 
-    # Check a complete XMAS pattern in a given direction
-    check_xmas = fn pos, dir ->
-      String.at(grid, pos + dir) == "M" and
-        String.at(grid, pos + 2 * dir) == "A" and
-        String.at(grid, pos + 3 * dir) == "S"
+    # Check if position is within grid bounds
+    in_bounds? = fn row, col -> row >= 0 and row < h and col >= 0 and col < w end
+
+    # Get character at position, return nil if out of bounds
+    at = fn row, col ->
+      if in_bounds?.(row, col), do: String.at(Enum.at(lines, row), col), else: nil
     end
 
-    # For each X position, check all 8 directions
-    grid
-    |> String.graphemes()
-    |> Enum.with_index()
-    |> Enum.filter(fn {char, _} -> char == "X" end)
-    |> Enum.map(fn {_, pos} ->
-      Enum.count(directions, &check_xmas.(pos, &1))
+    # Check for XMAS pattern from a position in a given direction
+    check_pattern = fn {row, col}, {drow, dcol} ->
+      at.(row + drow, col + dcol) == "M" and
+        at.(row + 2*drow, col + 2*dcol) == "A" and
+        at.(row + 3*drow, col + 3*dcol) == "S"
+    end
+
+    # All possible directions as {row_delta, col_delta}
+    directions = [
+      {0, 1},    # right
+      {0, -1},   # left
+      {1, 0},    # down
+      {-1, 0},   # up
+      {1, 1},    # down-right
+      {1, -1},   # down-left
+      {-1, 1},   # up-right
+      {-1, -1}   # up-left
+    ]
+
+    # For each X position, check all directions
+    x_positions
+    |> Enum.map(fn pos ->
+      Enum.count(directions, &check_pattern.(pos, &1))
     end)
     |> Enum.sum()
   end
