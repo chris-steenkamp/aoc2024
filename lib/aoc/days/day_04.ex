@@ -83,8 +83,6 @@ defmodule AOC.Days.Day04 do
     h = length(lines)
     w = String.length(Enum.at(lines, 0))
 
-    found = %{}
-
     # Find all X positions as {row, col} tuples
     a_positions =
       for row <- 0..(h - 1),
@@ -126,7 +124,7 @@ defmodule AOC.Days.Day04 do
 
     # For each X position, check the diagonals to and count the number of As that form part of more than one MAS X shape
     a_positions
-    |> Enum.reduce(found, fn pos, found ->
+    |> Enum.reduce(%{}, fn pos, found ->
       primary_directions
       |> Enum.reduce(found, fn dir, found ->
         check_pattern.(pos, dir, found)
