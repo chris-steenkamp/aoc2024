@@ -79,3 +79,22 @@ defmodule AOC.Days.Day04Test do
     assert Day04.part2() == 2011
   end
 end
+
+defmodule AOC.Days.Day05Test do
+  alias AOC.Days.Day05
+
+  use ExUnit.Case
+
+  @moduletag :day05
+
+  test "test the sample inputs" do
+    assert Day05.sample1() == 0
+    assert Day05.sample2() == 0
+  end
+
+  @tag :real
+  test "test the real inputs" do
+    assert Day05.part1() == 0
+    assert Day05.part2() == 0
+  end
+end
