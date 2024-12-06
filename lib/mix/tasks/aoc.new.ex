@@ -27,25 +27,25 @@ defmodule Mix.Tasks.Aoc.New do
       defmodule AOC.Days.Day#{day} do
         alias AOC.Helpers
 
-        def sample1(input \\ "day#{day}/sample.txt") do
+        def sample1(input \\\\ "day#{day}/sample.txt") do
           input
           |> Helpers.get_lines()
           |> solve_part1()
         end
 
-        def sample2(input \\ "day#{day}/sample.txt") do
+        def sample2(input \\\\ "day#{day}/sample.txt") do
           input
           |> Helpers.get_lines()
           |> solve_part2()
         end
 
-        def part1(input \\ "day#{day}/input.txt") do
+        def part1(input \\\\ "day#{day}/input.txt") do
           input
           |> Helpers.get_lines()
           |> solve_part1()
         end
 
-        def part2(input \\ "day#{day}/input.txt") do
+        def part2(input \\\\ "day#{day}/input.txt") do
           input
           |> Helpers.get_lines()
           |> solve_part2()
@@ -91,8 +91,9 @@ defmodule Mix.Tasks.Aoc.New do
 
       if session do
         url = "https://adventofcode.com/2024/day/#{String.to_integer(day)}/input"
+
         headers = [
-          {'cookie', String.to_charlist("session=#{session}")}
+          {~c"cookie", String.to_charlist("session=#{session}")}
         ]
 
         case :httpc.request(:get, {String.to_charlist(url), headers}, [], []) do
@@ -123,7 +124,7 @@ defmodule Mix.Tasks.Aoc.New do
 
   defp append_test_module(day) do
     path = Path.join(["test", "all_test.exs"])
-    
+
     test_module = """
 
     defmodule AOC.Days.Day#{day}Test do
@@ -152,7 +153,7 @@ defmodule Mix.Tasks.Aoc.New do
           File.write!(path, content <> test_module)
           Logger.info("Appended test module to #{path}")
         end
-      
+
       {:error, _} ->
         Logger.error("Could not read #{path}")
     end
