@@ -167,32 +167,29 @@ defmodule AOC.Days.Day06 do
       |> Enum.map(fn {loc, _} -> loc end)
       |> MapSet.new()
 
-    for y <- 0..(width - 1) do
-      for x <- 0..(height - 1) do
-        case at.(lines, {x, y}) != "#" and at.(lines, {x, y}) != "^" and
-               MapSet.member?(locations, {x, y}) do
-          true ->
-            lines = replace_char_at.(lines, {x, y}, "#")
+    # Replace the nested for loops with parallel processing
+    coordinates =
+      for y <- 0..(width - 1),
+          x <- 0..(height - 1),
+          at.(lines, {x, y}) != "#" and at.(lines, {x, y}) != "^" and
+            MapSet.member?(locations, {x, y}),
+          do: {x, y}
 
-            {_, exit_type} =
-              move.(move, lines, start, direction, {%{start => MapSet.new([direction])}, :start})
+    coordinates
+    |> Task.async_stream(
+      fn {x, y} ->
+        lines = replace_char_at.(lines, {x, y}, "#")
 
-            case exit_type == :loop do
-              true -> {{x, y}, true}
-              false -> {{x, y}, false}
-            end
+        {_, exit_type} =
+          move.(move, lines, start, direction, {%{start => MapSet.new([direction])}, :start})
 
-          false ->
-            {{x, y}, false}
-        end
-      end
-    end
-    |> Enum.map(
-      &(Enum.map(&1, fn {_, y} ->
-          y
-        end)
-        |> Enum.count(fn x -> x end))
+        {{x, y}, exit_type == :loop}
+      end,
+      max_concurrency: System.schedulers_online() * 2,
+      ordered: false
     )
-    |> Enum.sum()
+    |> Stream.map(fn {:ok, result} -> result end)
+    |> Stream.filter(fn {_, is_loop} -> is_loop end)
+    |> Enum.count()
   end
 end
