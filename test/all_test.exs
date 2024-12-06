@@ -109,12 +109,14 @@ defmodule AOC.Days.Day06Test do
 
   test "test the sample inputs" do
     assert Day06.sample1() == 41
-    assert Day06.sample2() == 0
+    assert Day06.sample2() == 6
   end
 
   @tag :real
+  @tag timeout: :infinity
+  @tag :slow
   test "test the real inputs" do
     assert Day06.part1() == 4663
-    assert Day06.part2() == 0
+    assert Day06.part2() == 1530
   end
 end
