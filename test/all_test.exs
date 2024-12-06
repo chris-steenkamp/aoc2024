@@ -88,13 +88,13 @@ defmodule AOC.Days.Day05Test do
   @moduletag :day05
 
   test "test the sample inputs" do
-    assert Day05.sample1() == 0
+    assert Day05.sample1() == 143
     assert Day05.sample2() == 0
   end
 
   @tag :real
   test "test the real inputs" do
-    assert Day05.part1() == 0
+    assert Day05.part1() == 3608
     assert Day05.part2() == 0
   end
 end
