@@ -49,6 +49,7 @@ dayXX/
 - [x] Day 3: Regex and Pattern Filtering
 - [x] Day 4: Grid Pattern Search (XMAS)
 - [x] Day 5: Dependency Graph Traversal
+- [x] Day 6: Grid Loop Detection with Parallel Processing
 - [ ] More adventures await...
 
 ## 🧠 Functional Programming Concepts
