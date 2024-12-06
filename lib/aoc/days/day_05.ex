@@ -25,32 +25,36 @@ defmodule AOC.Days.Day05 do
     |> solve_part2()
   end
 
-  def solve_part1(lines) do
-    [d, instructions] =
+  defp get_inputs(lines) do
+    [dependencies, instructions] =
       lines
       # Split into chunks at empty lines
       |> Enum.chunk_by(&(&1 == ""))
       |> Enum.reject(&(&1 == [""]))
 
     dependencies =
-      d
+      dependencies
       |> Enum.reduce(%{}, fn element, counter ->
         [x, y] = String.split(element, "|")
-        map1 = Map.get(counter, 1, Map.new())
-        map2 = Map.get(counter, 2, Map.new())
-        map1 = Map.put(map1, y, MapSet.put(Map.get(map1, y, MapSet.new()), x))
-        map2 = Map.put(map2, x, MapSet.put(Map.get(map2, x, MapSet.new()), y))
-        Map.put(Map.put(counter, 1, map1), 2, map2)
+        Map.put(counter, y, MapSet.put(Map.get(counter, y, MapSet.new()), x))
       end)
 
-    check_updates = fn updates ->
+    instructions =
+      instructions
+      |> Enum.map(&String.split(&1, ","))
+
+    [dependencies, instructions]
+  end
+
+  defp check_validity(instructions, dependencies) do
+    get_valid_updates = fn updates ->
       update_set =
         updates
         |> MapSet.new()
 
       check_page_acc = fn current_page, processed_pages ->
         # get all the dependencies of the current page
-        x_deps = Map.get(dependencies[1], current_page, MapSet.new())
+        x_deps = Map.get(dependencies, current_page, MapSet.new())
 
         # get the subset of dependencies which are in the update set
         deps_in_update = MapSet.intersection(x_deps, update_set)
@@ -72,35 +76,99 @@ defmodule AOC.Days.Day05 do
       end)
     end
 
-    get_mid_value = fn x ->
-      {_, index} = x
-
-      Enum.at(instructions, index)
-      |> String.split(",")
-      |> then(fn x ->
-        String.to_integer(Enum.at(x, div(length(x), 2)))
-      end)
-    end
-
     instructions
-    |> Enum.map(&String.split(&1, ","))
     |> Enum.map(fn x ->
       update_set = MapSet.new(x)
-      update_set == MapSet.intersection(check_updates.(x), update_set)
+      update_set == MapSet.intersection(get_valid_updates.(x), update_set)
     end)
     |> Enum.with_index()
-    |> Enum.filter(fn x ->
-      {valid, _} = x
-      valid
+  end
+
+  defp get_mid_value(updates) do
+    updates
+    |> then(fn x ->
+      String.to_integer(Enum.at(x, div(length(x), 2)))
     end)
-    |> Enum.map(fn x ->
-      get_mid_value.(x)
-    end)
+  end
+
+  # Helper function to do the actual traversal
+  defp traverse(node, graph, visited, result) do
+    case MapSet.member?(visited, node) do
+      true ->
+        {visited, result}
+
+      false ->
+        # Mark node as visited
+        visited = MapSet.put(visited, node)
+
+        # Get dependencies for this node
+        dependencies = Map.get(graph, node, MapSet.new())
+
+        # Recursively process all dependencies first
+        {visited, result} =
+          Enum.reduce(dependencies, {visited, result}, fn dep, {visited_acc, result_acc} ->
+            traverse(dep, graph, visited_acc, result_acc)
+          end)
+
+        # After processing all dependencies, add current node to result
+        {visited, [node | result]}
+    end
+  end
+
+  defp post_order_traverse(graph) do
+    # Start traversal with empty visited set and result list
+    {_, result} =
+      Enum.reduce(Map.keys(graph), {MapSet.new(), []}, fn node, {visited, result} ->
+        traverse(node, graph, visited, result)
+      end)
+
+    result
+  end
+
+  def solve_part1(lines) do
+    [dependencies, instructions] = get_inputs(lines)
+
+    updates = check_validity(instructions, dependencies)
+
+    updates
+    |> Enum.filter(fn {valid, _} -> valid end)
+    |> Enum.map(fn {_valid, index} -> get_mid_value(Enum.at(instructions, index)) end)
     |> Enum.sum()
   end
 
   def solve_part2(lines) do
-    # TODO: Implement solution
-    0
+    [dependencies, instructions] = get_inputs(lines)
+
+    updates = check_validity(instructions, dependencies)
+
+    # graph = post_order_traverse(dependencies)
+
+    updates
+    |> Enum.filter(fn {valid, _} -> not valid end)
+    |> Enum.map(fn {_, index} ->
+      i = Enum.at(instructions, index)
+      l = MapSet.new(i)
+
+      new_deps =
+        Enum.reduce(i, %{}, fn i, acc ->
+          f_dep = MapSet.intersection(l, Map.get(dependencies, i, MapSet.new()))
+          Map.put(acc, i, f_dep)
+        end)
+
+      graph = post_order_traverse(new_deps)
+
+      graph
+      |> Enum.reduce([], fn i, acc ->
+        cond do
+          MapSet.member?(l, i) -> [i | acc]
+          true -> acc
+        end
+      end)
+
+      # |> Enum.reverse()
+    end)
+    |> Enum.map(fn x -> get_mid_value(x) end)
+    # |> inspect()
+    |> Enum.sum()
   end
 end

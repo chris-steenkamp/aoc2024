@@ -48,6 +48,7 @@ dayXX/
 - [x] Day 2: Pattern Matching
 - [x] Day 3: Regex and Pattern Filtering
 - [x] Day 4: Grid Pattern Search (XMAS)
+- [x] Day 5: Dependency Graph Traversal
 - [ ] More adventures await...
 
 ## 🧠 Functional Programming Concepts
