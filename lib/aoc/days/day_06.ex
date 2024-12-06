@@ -103,7 +103,6 @@ defmodule AOC.Days.Day06 do
     next_direction = %{"^" => ">", ">" => "v", "v" => "<", "<" => "^"}
     direction = "^"
     start = find.("^")
-    locations = MapSet.new([start])
 
     in_bounds? = fn {x, y} ->
       x >= 0 and y >= 0 and x < height and y < width
@@ -114,10 +113,6 @@ defmodule AOC.Days.Day06 do
         String.slice(line, 0, x) <>
           new_char <> String.slice(line, (x + 1)..(String.length(line) - 1)//1)
       end)
-
-      # List.update_at(lines, y, fn line ->
-      #   String.slice(line, 0, x) <> new_char <> String.slice(line, (x + 1)..-1)
-      # end)
     end
 
     at = fn lines, {x, y} ->
@@ -164,9 +159,18 @@ defmodule AOC.Days.Day06 do
       end
     end
 
+    {locations, _} =
+      move.(move, lines, start, direction, {%{start => MapSet.new([direction])}, :start})
+
+    locations =
+      locations
+      |> Enum.map(fn {loc, _} -> loc end)
+      |> MapSet.new()
+
     for y <- 0..(width - 1) do
       for x <- 0..(height - 1) do
-        case at.(lines, {x, y}) != "#" and at.(lines, {x, y}) != "^" do
+        case at.(lines, {x, y}) != "#" and at.(lines, {x, y}) != "^" and
+               MapSet.member?(locations, {x, y}) do
           true ->
             lines = replace_char_at.(lines, {x, y}, "#")
 
