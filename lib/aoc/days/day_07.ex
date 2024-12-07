@@ -25,13 +25,30 @@ defmodule AOC.Days.Day07 do
     |> solve_part2()
   end
 
-  defp calculate(a, [], result), do: a == result
+  defp calculate(a, [], result, _use_concatenation), do: a == result
 
-  defp calculate(a, [b | rest], result) do
+  defp calculate(a, [b | rest], result, use_concatenation) do
     cond do
-      calculate(a + b, rest, result) -> true
-      calculate(a * b, rest, result) -> true
-      true -> false
+      a > result ->
+        false
+
+      calculate(a + b, rest, result, use_concatenation) ->
+        true
+
+      calculate(a * b, rest, result, use_concatenation) ->
+        true
+
+      use_concatenation ->
+        concat =
+          [a, b]
+          |> Enum.map(&Integer.to_string/1)
+          |> Enum.join()
+          |> String.to_integer()
+
+        calculate(concat, rest, result, use_concatenation)
+
+      true ->
+        false
     end
   end
 
@@ -44,13 +61,22 @@ defmodule AOC.Days.Day07 do
        |> Enum.map(&String.to_integer(&1))}
     end)
     |> Enum.map(fn {result, [a | rest]} ->
-      if calculate(a, rest, result), do: result, else: 0
+      if calculate(a, rest, result, false), do: result, else: 0
     end)
     |> Enum.sum()
   end
 
   def solve_part2(lines) do
-    # TODO: Implement solution
-    0
+    lines
+    |> Enum.map(fn x -> String.split(x, ":", trim: true) end)
+    |> Enum.map(fn [result, inputs] ->
+      {String.to_integer(result),
+       String.split(inputs, " ", trim: true)
+       |> Enum.map(&String.to_integer(&1))}
+    end)
+    |> Enum.map(fn {result, [a | rest]} ->
+      if calculate(a, rest, result, true), do: result, else: 0
+    end)
+    |> Enum.sum()
   end
 end

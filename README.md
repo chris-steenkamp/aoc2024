@@ -36,6 +36,7 @@ This project includes snippets and launch configurations to make coding more jol
 ## 🧝‍♂️ Directory Structure
 
 Each day's puzzle has its own directory:
+
 ```
 dayXX/
   ├── input.txt   # Your puzzle input
@@ -50,6 +51,7 @@ dayXX/
 - [x] Day 4: Grid Pattern Search (XMAS)
 - [x] Day 5: Dependency Graph Traversal
 - [x] Day 6: Grid Loop Detection with Parallel Processing
+- [x] Day 7: Arithmetic Expression Evaluation and String Operations
 - [ ] More adventures await...
 
 ## 🧠 Functional Programming Concepts
