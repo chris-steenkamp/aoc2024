@@ -26,7 +26,6 @@ defmodule AOC.Days.Day08 do
   end
 
   defp map_grid_chars([]), do: %{}
-  # def map_grid_chars([[] | _]), do: %{}
 
   defp map_grid_chars(grid) do
     for y <- 0..(length(grid) - 1),
@@ -44,9 +43,25 @@ defmodule AOC.Days.Day08 do
     case H.calculate_slope(p1, p2) do
       s when s > 0 -> [H.add_points(p1, {-dx, -dy}), H.add_points(p2, {dx, dy})]
       s when s < 0 -> [H.add_points(p1, {dx, -dy}), H.add_points(p2, {-dx, dy})]
-      0 -> [H.add_points(p1, {-dx, 0}), H.add_points(p2, {dx, 0})]
+      0.0 -> [H.add_points(p1, {-dx, 0}), H.add_points(p2, {dx, 0})]
       :undefined -> [H.add_points(p1, {0, -dy}), H.add_points(p2, {0, dy})]
     end
+  end
+
+  defp get_antinodes2({p1, p2}, n) do
+    {dx, dy} = H.calculate_absolute_offset(p1, p2)
+    slope = H.calculate_slope(p1, p2)
+
+    Stream.iterate({p1, p2}, fn {p1, p2} ->
+      case slope do
+        s when s > 0 -> {H.add_points(p1, {-dx, -dy}), H.add_points(p2, {dx, dy})}
+        s when s < 0 -> {H.add_points(p1, {dx, -dy}), H.add_points(p2, {-dx, dy})}
+        0.0 -> {H.add_points(p1, {-dx, 0}), H.add_points(p2, {dx, 0})}
+        :undefined -> {H.add_points(p1, {0, -dy}), H.add_points(p2, {0, dy})}
+      end
+    end)
+    |> Enum.take(n + 1)
+    |> Enum.flat_map(fn {p1, p2} -> [p1, p2] end)
   end
 
   defp pair([a | rest]) do
@@ -83,7 +98,13 @@ defmodule AOC.Days.Day08 do
   end
 
   def solve_part2(grid) do
-    # TODO: Implement solution
-    0
+    grid
+    |> map_grid_chars()
+    |> Enum.map(fn {_, v} -> MapSet.to_list(v) end)
+    |> Enum.flat_map(&pair/1)
+    |> Enum.flat_map(&get_antinodes2(&1, 25))
+    |> Enum.filter(fn x -> H.in_bounds?(grid, x) end)
+    |> Enum.uniq()
+    |> Enum.count()
   end
 end

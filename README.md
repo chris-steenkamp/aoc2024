@@ -52,6 +52,7 @@ dayXX/
 - [x] Day 5: Dependency Graph Traversal
 - [x] Day 6: Grid Loop Detection with Parallel Processing
 - [x] Day 7: Arithmetic Expression Evaluation and String Operations
+- [x] Day 8: Grid Geometry and Pattern Extrapolation
 - [ ] More adventures await...
 
 ## 🧠 Functional Programming Concepts
