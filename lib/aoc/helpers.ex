@@ -34,4 +34,36 @@ defmodule AOC.Helpers do
         new_char <> String.slice(line, (x + 1)..(String.length(line) - 1)//1)
     end)
   end
+
+  def calculate_manhattan_distance({x1, y1}, {x2, y2}) do
+    abs(x1 - x2) + abs(y1 - y2)
+  end
+
+  def calculate_euclidean_distance({x1, y1}, {x2, y2}) do
+    :math.sqrt(:math.pow(x1 - x2, 2) + :math.pow(y1 - y2, 2))
+  end
+
+  def calculate_chebyshev_distance({x1, y1}, {x2, y2}) do
+    max(abs(x1 - x2), abs(y1 - y2))
+  end
+
+  def calculate_absolute_offset({x1, y1}, {x2, y2}) do
+    {abs(x2 - x1), abs(y2 - y1)}
+  end
+
+  def calculate_offset({x1, y1}, {x2, y2}) do
+    {x2 - x1, y2 - y1}
+  end
+
+  def add_points({x1, y1}, {x2, y2}) do
+    {x1 + x2, y1 + y2}
+  end
+
+  def calculate_slope({x1, y1}, {x2, y2}) do
+    if x2 === x1 do
+      :undefined
+    else
+      (y2 - y1) / (x2 - x1)
+    end
+  end
 end
