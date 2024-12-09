@@ -158,3 +158,24 @@ defmodule AOC.Days.Day08Test do
     assert Day08.part2() == 1277
   end
 end
+
+defmodule AOC.Days.Day09Test do
+  alias AOC.Days.Day09
+
+  use ExUnit.Case
+
+  @moduletag :day09
+
+  test "test the sample inputs" do
+    assert Day09.sample1() == 1928
+    assert Day09.sample2() == 0
+  end
+
+  @tag :real
+  @tag timeout: :infinity
+  @tag :slow
+  test "test the real inputs" do
+    assert Day09.part1() == 0
+    assert Day09.part2() == 0
+  end
+end
