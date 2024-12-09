@@ -51,12 +51,12 @@ defmodule Mix.Tasks.Aoc.New do
           |> solve_part2()
         end
 
-        def solve_part1(lines) do
+        def solve_part1(grid) do
           # TODO: Implement solution
           0
         end
 
-        def solve_part2(lines) do
+        def solve_part2(grid) do
           # TODO: Implement solution
           0
         end
