@@ -68,7 +68,87 @@ defmodule AOC.Days.Day09 do
   end
 
   def solve_part2(grid) do
-    # TODO: Implement solution
-    0
+    freespace_map =
+      grid
+      |> Enum.at(0)
+      |> String.graphemes()
+      |> Enum.map(&String.to_integer/1)
+      |> Enum.with_index()
+      |> Enum.reduce({%{}, %{}, 0}, fn {size, index}, {fs_acc, f_acc, offset} ->
+        is_free_space = rem(index, 2) == 1
+        # offset + size}
+        span = {offset, size}
+
+        cond do
+          is_free_space == true ->
+            {
+              Map.update(fs_acc, size, [span], &[span | &1]),
+              f_acc,
+              offset + size
+            }
+
+          true ->
+            {
+              fs_acc,
+              Map.update(f_acc, div(index, 2), span, &[span | &1]),
+              offset + size
+            }
+        end
+      end)
+
+    {space, blocks, _} = freespace_map
+    # space_keys = Map.keys(space)
+
+    blocks
+    |> Enum.reverse()
+    |> Enum.reduce({[], space}, fn {id, {i, size}}, {b, sp} ->
+      # IO.inspect({id, sp})
+      space_keys = Map.keys(sp) |> Enum.sort()
+
+      freespace_index =
+        Enum.find(space_keys, fn x ->
+          x >= size and
+            Enum.find(Map.get(sp, x, []), fn {y, _} -> y < i end) != nil
+
+          # Map.get(sp, x, []) != []
+        end)
+
+      cond do
+        freespace_index == nil ->
+          {[{id, i, size} | b], sp}
+
+        true ->
+          freespace_locations =
+            Map.get(sp, freespace_index)
+            |> Enum.sort()
+
+          [{ci, cs}] = freespace_locations |> Enum.take(1)
+
+          cond do
+            ci + size < i ->
+              new_size = cs - size
+
+              sp =
+                Map.update(sp, new_size, [{ci + size, new_size}], &[{ci + size, new_size} | &1])
+
+              sp = Map.update(sp, freespace_index, [], fn x -> Enum.sort(x) |> Enum.drop(1) end)
+
+              {
+                [{id, ci, size} | b],
+                sp
+              }
+
+            true ->
+              {[{id, i, size} | b], sp}
+          end
+      end
+    end)
+    |> then(fn {p, _} -> p end)
+    |> Enum.map(fn {id, start, size} ->
+      for i <- 0..(size - 1),
+          do: id * (start + i)
+    end)
+    |> Enum.map(&Enum.sum/1)
+    |> Enum.sum()
   end
 end
