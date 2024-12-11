@@ -193,12 +193,12 @@ defmodule AOC.Days.Day10Test do
 
   test "test the sample inputs" do
     assert Day10.sample1() == 36
-    assert Day10.sample2() == 0
+    assert Day10.sample2() == 81
   end
 
   @tag :real
   test "test the real inputs" do
     assert Day10.part1() == 719
-    assert Day10.part2() == 0
+    assert Day10.part2() == 1530
   end
 end
