@@ -25,29 +25,29 @@ defmodule Mix.Tasks.Aoc.New do
     unless File.exists?(path) do
       template = """
       defmodule AOC.Days.Day#{day} do
-        alias AOC.Helpers
+        alias AOC.Helpers, as: H
 
         def sample1(input \\\\ "day#{day}/sample.txt") do
           input
-          |> Helpers.get_lines()
+          |> H.get_lines()
           |> solve_part1()
         end
 
         def sample2(input \\\\ "day#{day}/sample.txt") do
           input
-          |> Helpers.get_lines()
+          |> H.get_lines()
           |> solve_part2()
         end
 
         def part1(input \\\\ "day#{day}/input.txt") do
           input
-          |> Helpers.get_lines()
+          |> H.get_lines()
           |> solve_part1()
         end
 
         def part2(input \\\\ "day#{day}/input.txt") do
           input
-          |> Helpers.get_lines()
+          |> H.get_lines()
           |> solve_part2()
         end
 
