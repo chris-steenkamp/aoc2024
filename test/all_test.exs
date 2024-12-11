@@ -168,14 +168,18 @@ defmodule AOC.Days.Day09Test do
 
   test "test the sample inputs" do
     assert Day09.sample1() == 1928
-    assert Day09.sample2() == 0
+    assert Day09.sample2() == 2858
   end
 
   @tag :real
   @tag timeout: :infinity
   @tag :slow
-  test "test the real inputs" do
-    assert Day09.part1() == 0
-    assert Day09.part2() == 0
+  test "test part 1 real inputs" do
+    assert Day09.part1() == 6_337_367_222_422
+  end
+
+  @tag :real
+  test "test par 2 real inputs" do
+    assert Day09.part2() == 6_361_380_647_183
   end
 end

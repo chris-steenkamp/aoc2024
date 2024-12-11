@@ -99,23 +99,31 @@ defmodule AOC.Days.Day09 do
     {space, blocks, _} = freespace_map
     # space_keys = Map.keys(space)
 
-    blocks
+    Map.keys(blocks)
     |> Enum.sort()
     |> Enum.reverse()
-    |> Enum.reduce({[], space}, fn {id, {i, size}}, {b, sp} ->
-      # IO.inspect({id, sp})
-      space_keys = Map.keys(sp) |> Enum.sort()
+    |> Enum.reduce({[], space}, fn id, {b, sp} ->
+      {i, size} = Map.get(blocks, id)
+      # IO.inspect({id, i, size, b, sp})
 
-      freespace_index =
-        Enum.find(space_keys, fn x ->
-          x >= size and
-            Enum.find(Map.get(sp, x, []), fn {y, _} -> y < i end) != nil
+      {min_idx, freespace_index} =
+        size..10
+        |> Enum.reduce({10 ** 18, -1}, fn x, {min_idx, best_width} ->
+          heap = Map.get(sp, x, []) |> Enum.sort()
 
-          # Map.get(sp, x, []) != []
+          cond do
+            heap == [] ->
+              {min_idx, best_width}
+
+            true ->
+              [{ix, _} | _] = heap
+              {min_idx, best_width} = if min_idx > ix, do: {ix, x}, else: {min_idx, best_width}
+              {min_idx, best_width}
+          end
         end)
 
       cond do
-        freespace_index == nil ->
+        min_idx == 10 ** 18 || freespace_index == nil || freespace_index >= i ->
           {[{id, i, size} | b], sp}
 
         true ->
@@ -123,21 +131,31 @@ defmodule AOC.Days.Day09 do
             Map.get(sp, freespace_index)
             |> Enum.sort()
 
-          [{ci, cs}] = freespace_locations |> Enum.take(1)
+          {ci, _cs} = freespace_locations |> Enum.at(0)
 
           cond do
-            ci + size < i ->
-              new_size = cs - size
-
-              sp =
-                Map.update(sp, new_size, [{ci + size, new_size}], &[{ci + size, new_size} | &1])
+            ci < i ->
+              new_size = freespace_index - size
 
               sp = Map.update(sp, freespace_index, [], fn x -> Enum.sort(x) |> Enum.drop(1) end)
 
-              {
-                [{id, ci, size} | b],
-                sp
-              }
+              sp =
+                cond do
+                  new_size > 0 ->
+                    Map.update(
+                      sp,
+                      new_size,
+                      [{ci + size, new_size}],
+                      &([{ci + size, new_size} | &1] |> Enum.sort())
+                    )
+
+                  true ->
+                    sp
+                end
+
+              # IO.inspect(sp)
+
+              {[{id, ci, size} | b], sp}
 
             true ->
               {[{id, i, size} | b], sp}
