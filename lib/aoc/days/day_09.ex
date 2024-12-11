@@ -100,6 +100,7 @@ defmodule AOC.Days.Day09 do
     # space_keys = Map.keys(space)
 
     blocks
+    |> Enum.sort()
     |> Enum.reverse()
     |> Enum.reduce({[], space}, fn {id, {i, size}}, {b, sp} ->
       # IO.inspect({id, sp})
