@@ -53,6 +53,7 @@ dayXX/
 - [x] Day 6: Grid Loop Detection with Parallel Processing
 - [x] Day 7: Arithmetic Expression Evaluation and String Operations
 - [x] Day 8: Grid Geometry and Pattern Extrapolation
+- [x] Day 9: Free space mapping with Heap Management
 - [ ] More adventures await...
 
 ## 🧠 Functional Programming Concepts

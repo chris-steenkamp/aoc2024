@@ -1,5 +1,6 @@
 defmodule AOC.Days.Day09 do
   alias AOC.Helpers
+  alias DataStructures.MinHeap
 
   def sample1(input \\ "day09/sample.txt") do
     input
@@ -68,48 +69,52 @@ defmodule AOC.Days.Day09 do
   end
 
   def solve_part2(grid) do
+    heaps = List.duplicate([], 10)
+
     freespace_map =
       grid
       |> Enum.at(0)
       |> String.graphemes()
       |> Enum.map(&String.to_integer/1)
       |> Enum.with_index()
-      |> Enum.reduce({%{}, %{}, 0}, fn {size, index}, {fs_acc, f_acc, offset} ->
+      |> Enum.reduce({heaps, %{}, 0}, fn {size, index}, {heaps, f_acc, offset} ->
         is_free_space = rem(index, 2) == 1
         # offset + size}
         span = {offset, size}
 
         cond do
+          size == 0 ->
+            {heaps, f_acc, offset}
+
           is_free_space == true ->
             {
-              Map.update(fs_acc, size, [span], &[span | &1]),
+              List.update_at(heaps, size, &MinHeap.insert(&1, span)),
               f_acc,
               offset + size
             }
 
           true ->
             {
-              fs_acc,
+              heaps,
               Map.update(f_acc, div(index, 2), span, &[span | &1]),
               offset + size
             }
         end
       end)
 
-    {space, blocks, _} = freespace_map
-    # space_keys = Map.keys(space)
+    {heaps, blocks, _} = freespace_map
 
     Map.keys(blocks)
     |> Enum.sort()
     |> Enum.reverse()
-    |> Enum.reduce({[], space}, fn id, {b, sp} ->
+    |> Enum.reduce({[], heaps}, fn id, {b, heaps} ->
       {i, size} = Map.get(blocks, id)
       # IO.inspect({id, i, size, b, sp})
 
       {min_idx, freespace_index} =
-        size..10
+        size..(length(heaps) - 1)
         |> Enum.reduce({10 ** 18, -1}, fn x, {min_idx, best_width} ->
-          heap = Map.get(sp, x, []) |> Enum.sort()
+          heap = Enum.at(heaps, x)
 
           cond do
             heap == [] ->
@@ -124,41 +129,37 @@ defmodule AOC.Days.Day09 do
 
       cond do
         min_idx == 10 ** 18 || freespace_index == nil || freespace_index >= i ->
-          {[{id, i, size} | b], sp}
+          {[{id, i, size} | b], heaps}
+
+        # freespace_index >= i ->
+        #   {[{id, i, size} | b], heaps}
 
         true ->
-          freespace_locations =
-            Map.get(sp, freespace_index)
-            |> Enum.sort()
+          {freespace_location, new_heap} = MinHeap.extract_min(Enum.at(heaps, freespace_index))
 
-          {ci, _cs} = freespace_locations |> Enum.at(0)
+          {ci, _cs} = freespace_location
 
           cond do
             ci < i ->
               new_size = freespace_index - size
 
-              sp = Map.update(sp, freespace_index, [], fn x -> Enum.sort(x) |> Enum.drop(1) end)
+              heaps = List.update_at(heaps, freespace_index, fn _ -> new_heap end)
 
-              sp =
+              heaps =
                 cond do
                   new_size > 0 ->
-                    Map.update(
-                      sp,
-                      new_size,
-                      [{ci + size, new_size}],
-                      &([{ci + size, new_size} | &1] |> Enum.sort())
-                    )
+                    List.update_at(heaps, new_size, &MinHeap.insert(&1, {ci + size, new_size}))
 
                   true ->
-                    sp
+                    heaps
                 end
 
-              # IO.inspect(sp)
+              # IO.inspect(heaps)
 
-              {[{id, ci, size} | b], sp}
+              {[{id, ci, size} | b], heaps}
 
             true ->
-              {[{id, i, size} | b], sp}
+              {[{id, i, size} | b], heaps}
           end
       end
     end)
