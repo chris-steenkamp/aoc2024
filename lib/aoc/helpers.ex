@@ -66,4 +66,8 @@ defmodule AOC.Helpers do
       (y2 - y1) / (x2 - x1)
     end
   end
+
+  def get_dimensions(grid) do
+    {String.length(Enum.at(grid, 0)), length(grid)}
+  end
 end
