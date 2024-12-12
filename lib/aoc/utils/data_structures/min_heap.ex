@@ -2,7 +2,7 @@
 # A min-heap is a binary tree where each parent node is smaller than or equal to its child nodes.
 # We will use a list to represent the heap, where the first element is `nil` (to simplify calculations for indices).
 
-defmodule DataStructures.MinHeap do
+defmodule Aoc.Utils.DataStructures.MinHeap do
   # Initializes an empty heap
   def new do
     []

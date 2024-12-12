@@ -1,5 +1,5 @@
 defmodule AOC.Test.MinHeapTest do
-  alias DataStructures.MinHeap
+  alias Aoc.Utils.DataStructures.MinHeap
 
   use ExUnit.Case
 

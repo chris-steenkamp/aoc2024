@@ -1,6 +1,6 @@
 defmodule AOC.Days.Day09 do
   alias AOC.Helpers
-  alias DataStructures.MinHeap
+  alias Aoc.Utils.DataStructures.MinHeap
 
   def sample1(input \\ "day09/sample.txt") do
     input
