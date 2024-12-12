@@ -55,6 +55,7 @@ dayXX/
 - [x] Day 8: Grid Geometry and Pattern Extrapolation
 - [x] Day 9: Free space mapping with Heap Management
 - [x] Day 10: Grid Traversal with Recursive Depth-First Search
+- [x] Day 11: Memoization with Agents
 - [ ] More adventures await...
 
 ## 🧠 Functional Programming Concepts
@@ -66,6 +67,7 @@ Throughout this journey, we're learning and applying functional programming conc
 - **Higher-Order Functions**: Using functions like `map`, `reduce`, and `filter` for data transformation
 - **Pipeline Operator**: Chaining operations with the `|>` operator for cleaner code
 - **Recursion**: Solving problems through recursive function calls instead of loops
+- **Memoization**: Implementing memoization using Agents to help optimize recursive calculations
 
 ## 🌠 Running Tests
 

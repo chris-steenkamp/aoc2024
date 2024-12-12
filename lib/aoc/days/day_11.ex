@@ -1,5 +1,6 @@
 defmodule AOC.Days.Day11 do
   alias AOC.Helpers, as: H
+  alias Agent
 
   def sample1(input \\ "day11/sample.txt") do
     input
@@ -25,19 +26,39 @@ defmodule AOC.Days.Day11 do
     |> solve_part2()
   end
 
-  defp generator(stone) do
-    cond do
-      stone == "0" ->
-        ["1"]
+  defp mem_gen(stone, times) do
+    {:ok, _} = Agent.start_link(fn -> %{} end, name: __MODULE__)
+    result = generator(stone, times)
+    Agent.stop(__MODULE__)
+    result
+  end
 
-      rem(String.length(stone), 2) == 0 ->
-        String.split_at(stone, div(String.length(stone), 2))
-        |> then(fn {x, y} -> [x, y] end)
-        |> Enum.map(&String.to_integer/1)
-        |> Enum.map(&Integer.to_string/1)
+  defp generator(stone, times) do
+    case Agent.get(__MODULE__, &Map.get(&1, {stone, times})) do
+      nil ->
+        result =
+          cond do
+            times === 0 ->
+              1
 
-      stone ->
-        [Integer.to_string(String.to_integer(stone) * 2024)]
+            stone === 0 ->
+              generator(1, times - 1)
+
+            (x = Integer.to_string(stone)) && rem(String.length(x), 2) === 0 ->
+              {l, r} = String.split_at(x, div(String.length(x), 2))
+
+              generator(String.to_integer(l), times - 1) +
+                generator(String.to_integer(r), times - 1)
+
+            true ->
+              generator(stone * 2024, times - 1)
+          end
+
+        Agent.update(__MODULE__, &Map.put(&1, {stone, times}, result))
+        result
+
+      result ->
+        result
     end
   end
 
@@ -46,17 +67,22 @@ defmodule AOC.Days.Day11 do
       grid
       |> Enum.at(0)
       |> String.split()
+      |> Enum.map(&String.to_integer/1)
 
-    0..24
-    |> Enum.reduce(stones, fn _, stones ->
-      stones
-      |> Enum.flat_map(&generator(&1))
-    end)
-    |> Enum.count()
+    stones
+    |> Enum.map(&mem_gen(&1, 25))
+    |> Enum.sum()
   end
 
   def solve_part2(grid) do
-    # TODO: Implement solution
-    0
+    stones =
+      grid
+      |> Enum.at(0)
+      |> String.split()
+      |> Enum.map(&String.to_integer/1)
+
+    stones
+    |> Enum.map(&mem_gen(&1, 75))
+    |> Enum.sum()
   end
 end

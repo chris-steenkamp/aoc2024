@@ -212,12 +212,14 @@ defmodule AOC.Days.Day11Test do
 
   test "test the sample inputs" do
     assert Day11.sample1() == 55312
-    assert Day11.sample2() == 0
+    assert Day11.sample2() == 65_601_038_650_482
   end
 
   @tag :real
+  @tag timeout: :infinity
+  @tag :slow
   test "test the real inputs" do
     assert Day11.part1() == 199_982
-    assert Day11.part2() == 0
+    assert Day11.part2() == 237_149_922_829_154
   end
 end
