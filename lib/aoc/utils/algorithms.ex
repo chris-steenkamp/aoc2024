@@ -1,4 +1,4 @@
-defmodule AOC.Algorithms do
+defmodule Aoc.Utils.Algorithms do
   alias AOC.Helpers, as: H
 
   def floodfill(grid, p, visited, regions, region_id, region_value) do
