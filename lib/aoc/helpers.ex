@@ -1,4 +1,7 @@
 defmodule AOC.Helpers do
+  @directions_4 [{0, 1}, {0, -1}, {1, 0}, {-1, 0}]
+  @directions_8 @directions_4 ++ [{1, 1}, {1, -1}, {-1, 1}, {-1, -1}]
+
   def get_lines(filename, trim \\ true) do
     Path.join(["priv", "inputs", filename])
     |> File.read!()
@@ -69,5 +72,20 @@ defmodule AOC.Helpers do
 
   def get_dimensions(grid) do
     {String.length(Enum.at(grid, 0)), length(grid)}
+  end
+
+  def get_points(grid) do
+    {width, height} = get_dimensions(grid)
+
+    for y <- 0..height,
+        x <- 0..width,
+        do: {x, y}
+  end
+
+  def get_directions(include_diagonals \\ false) do
+    case include_diagonals do
+      true -> @directions_8
+      false -> @directions_4
+    end
   end
 end
