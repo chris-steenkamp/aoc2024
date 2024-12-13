@@ -34,15 +34,20 @@ defmodule Aoc.Utils.Algorithms do
 
   def get_regions(grid) do
     H.get_points(grid)
-    |> Enum.reduce({MapSet.new(), %{}, 0, 0}, fn p, {visited, regions, region_id, region_value} ->
-      case MapSet.member?(visited, p) do
-        true ->
-          {visited, regions, region_id, region_value}
+    |> Enum.reduce(
+      {MapSet.new(), %{}, 0, 0},
+      fn p, {visited, regions, region_id, region_value} ->
+        current_value = H.at(grid, p)
 
-        false ->
-          floodfill(grid, p, visited, regions, region_id + 1, H.at(grid, p))
+        case MapSet.member?(visited, p) do
+          true ->
+            {visited, regions, region_id, region_value}
+
+          false ->
+            floodfill(grid, p, visited, regions, region_id + 1, current_value)
+        end
       end
-    end)
+    )
     |> elem(1)
   end
 end
