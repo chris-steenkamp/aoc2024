@@ -26,38 +26,29 @@ defmodule AOC.Days.Day12 do
     |> solve_part2()
   end
 
+  defp get_perimeter_v1(grid, point, plot_value) do
+    H.get_directions()
+    |> Enum.map(&H.add_points(point, &1))
+    |> Enum.map(fn new_point ->
+      case H.at(grid, new_point) === plot_value do
+        true -> 0
+        false -> 1
+      end
+    end)
+    |> Enum.sum()
+  end
+
   def solve_part1(grid) do
     A.get_regions(grid)
-    |> Enum.flat_map(fn {k, v} ->
-      v
-      |> Enum.map(fn {region_id, region_points} ->
-        {k, region_id, length(region_points), region_points}
+    |> Enum.flat_map(fn {plot_value, plot_regions} ->
+      plot_regions
+      |> Enum.map(fn {_region_id, region_points} ->
+        region_points
+        |> Enum.map(&get_perimeter_v1(grid, &1, plot_value))
+        |> Enum.reduce(0, &(&1 + &2))
+        |> then(&(&1 * length(region_points)))
       end)
     end)
-    |> Enum.map(fn {plot_value, region_id, region_length, region_points} ->
-      region_points
-      |> Enum.map(fn point ->
-        H.get_directions()
-        |> Enum.map(&H.add_points(point, &1))
-        |> Enum.map(fn new_point ->
-          case H.at(grid, new_point) === plot_value do
-            true -> 0
-            false -> 1
-          end
-        end)
-      end)
-      |> Enum.map(fn list ->
-        list
-        |> Enum.reduce(0, fn perimeter, acc ->
-          acc + perimeter
-        end)
-      end)
-      |> Enum.reduce(0, fn p, acc ->
-        p + acc
-      end)
-      |> then(fn p -> {plot_value, region_id, p * region_length} end)
-    end)
-    |> Enum.map(fn {_, _, c} -> c end)
     |> Enum.sum()
   end
 
