@@ -25,40 +25,40 @@ defmodule AOC.Days.Day13 do
     |> solve_part2()
   end
 
+  defp get_offsets(s) do
+    [_, coords] = String.split(s, ":")
+    [[_, x, y]] = Regex.scan(~r/X\+(-?\d+),\sY\+(-?\d+)/, coords)
+    {String.to_integer(x), String.to_integer(y)}
+  end
+
+  defp get_claw_position(s) do
+    [_, coords] = String.split(s, ":")
+    [[_, x, y]] = Regex.scan(~r/X=(-?\d+),\sY=(-?\d+)/, coords)
+    {String.to_integer(x), String.to_integer(y)}
+  end
+
+  defp cramers_rule(a1, a2, b1, b2, c1, c2, offset) do
+    div = a1 * b2 - b1 * a2
+    x = floor((c1 * b2 - b1 * c2) / div)
+    y = floor((a1 * c2 - c1 * a2) / div)
+
+    cond do
+      a1 * x + b1 * y === c1 && a2 * x + b2 * y === c2 -> x * 3 + y
+      true -> 0
+    end
+  end
+
   def solve_part1(grid) do
-    get_offsets = fn s ->
-      [_, coords] = String.split(s, ":")
-      [[_, x, y]] = Regex.scan(~r/X\+(-?\d+),\sY\+(-?\d+)/, coords)
-      {String.to_integer(x), String.to_integer(y)}
-    end
-
-    get_claw_position = fn s ->
-      [_, coords] = String.split(s, ":")
-      [[_, x, y]] = Regex.scan(~r/X=(-?\d+),\sY=(-?\d+)/, coords)
-      {String.to_integer(x), String.to_integer(y)}
-    end
-
-    cramers_rule = fn a1, a2, b1, b2, c1, c2 ->
-      div = a1 * b2 - b1 * a2
-      x = floor((c1 * b2 - b1 * c2) / div)
-      y = floor((a1 * c2 - c1 * a2) / div)
-
-      cond do
-        a1 * x + b1 * y === c1 && a2 * x + b2 * y === c2 -> x * 3 + y
-        true -> 0
-      end
-    end
-
     grid
     |> Enum.chunk_every(3)
     |> Enum.map(fn [a, b, p] ->
-      button_a = get_offsets.(a)
-      button_b = get_offsets.(b)
-      claw = get_claw_position.(p)
+      button_a = get_offsets(a)
+      button_b = get_offsets(b)
+      claw = get_claw_position(p)
       {button_a, button_b, claw}
     end)
     |> Enum.map(fn {{a1, a2}, {b1, b2}, {c1, c2}} ->
-      cramers_rule.(a1, a2, b1, b2, c1, c2)
+      cramers_rule(a1, a2, b1, b2, c1, c2, 0)
     end)
     |> Enum.sum()
   end
