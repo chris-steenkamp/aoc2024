@@ -252,12 +252,12 @@ defmodule AOC.Days.Day13Test do
 
   test "test the sample inputs" do
     assert Day13.sample1() == 480
-    assert Day13.sample2() == 0
+    assert Day13.sample2() == 875_318_608_908
   end
 
   @tag :real
   test "test the real inputs" do
     assert Day13.part1() == 27105
-    assert Day13.part2() == 0
+    assert Day13.part2() == 101_726_882_250_942
   end
 end

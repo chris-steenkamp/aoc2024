@@ -57,6 +57,7 @@ dayXX/
 - [x] Day 10: Grid Traversal with Recursive Depth-First Search
 - [x] Day 11: Memoization with Agents
 - [x] Day 12: Grid traversal and perimeter calculation using functional programming concepts.
+- [ ] Day 13: Solving systems of linear equations using Cramer's Rule and functional programming concepts like list processing and pattern matching.
 - [ ] More adventures await...
 
 ## 🧠 Functional Programming Concepts

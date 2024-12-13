@@ -37,7 +37,7 @@ defmodule AOC.Days.Day13 do
     {String.to_integer(x), String.to_integer(y)}
   end
 
-  defp cramers_rule(a1, a2, b1, b2, c1, c2, offset) do
+  defp cramers_rule(a1, a2, b1, b2, c1, c2) do
     div = a1 * b2 - b1 * a2
     x = floor((c1 * b2 - b1 * c2) / div)
     y = floor((a1 * c2 - c1 * a2) / div)
@@ -58,13 +58,25 @@ defmodule AOC.Days.Day13 do
       {button_a, button_b, claw}
     end)
     |> Enum.map(fn {{a1, a2}, {b1, b2}, {c1, c2}} ->
-      cramers_rule(a1, a2, b1, b2, c1, c2, 0)
+      cramers_rule(a1, a2, b1, b2, c1, c2)
     end)
     |> Enum.sum()
   end
 
   def solve_part2(grid) do
-    # TODO: Implement solution
-    0
+    offset = 10_000_000_000_000
+
+    grid
+    |> Enum.chunk_every(3)
+    |> Enum.map(fn [a, b, p] ->
+      button_a = get_offsets(a)
+      button_b = get_offsets(b)
+      claw = get_claw_position(p)
+      {button_a, button_b, claw}
+    end)
+    |> Enum.map(fn {{a1, a2}, {b1, b2}, {c1, c2}} ->
+      cramers_rule(a1, a2, b1, b2, c1 + offset, c2 + offset)
+    end)
+    |> Enum.sum()
   end
 end
