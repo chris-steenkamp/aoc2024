@@ -88,4 +88,49 @@ defmodule AOC.Helpers do
       false -> @directions_4
     end
   end
+
+  def move_down({x, y}) do
+    add_points({x, y}, Enum.at(@directions_4, 0))
+  end
+
+  def move_up({x, y}) do
+    add_points({x, y}, Enum.at(@directions_4, 1))
+  end
+
+  def move_right({x, y}) do
+    add_points({x, y}, Enum.at(@directions_4, 2))
+  end
+
+  def move_left({x, y}) do
+    add_points({x, y}, Enum.at(@directions_4, 3))
+  end
+
+  def move_top_left({x, y}) do
+    move_left(move_up({x, y}))
+  end
+
+  def move_top_right({x, y}) do
+    move_right(move_up({x, y}))
+  end
+
+  def move_bottom_left({x, y}) do
+    move_left(move_down({x, y}))
+  end
+
+  def move_bottom_right({x, y}) do
+    move_right(move_down({x, y}))
+  end
+
+  def find(grid, c) do
+    grid
+    |> Enum.with_index()
+    |> Enum.find_value(fn {grid, y} ->
+      case String.split(grid, "", trim: true)
+           |> Enum.with_index()
+           |> Enum.find(fn {char, _x} -> char == c end) do
+        nil -> nil
+        {_char, x} -> {x, y}
+      end
+    end)
+  end
 end
