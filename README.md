@@ -4,11 +4,22 @@ Ho ho ho! Welcome to my Advent of Code 2024 solutions repository, where we're so
 
 ## 🌟 Project Structure
 
-```
+```ascii
 lib/
-  ├── dayXX.ex    # Daily solutions
-  ├── helpers.ex  # Helper functions
-  └── mix/tasks/  # Custom mix tasks
+  ├── aoc/
+  │   ├── days/           # Daily solutions
+  │   │   ├── day_01.ex
+  │   │   ├── day_02.ex
+  │   │   └── ...
+  │   ├── utils/         # Utility modules
+  │   │   └── ...
+  │   └── helpers.ex     # Helper functions
+  └── mix/tasks/         # Custom mix tasks
+test/
+  ├── all_test.exs             # Tests for daily solutions
+  ├── helper_test.exs          # Tests for helper functions
+  ├── minheap_test.exs          # Tests for minheap data structure
+  └── test_helper.exs
 ```
 
 ## 🎁 Running Solutions
@@ -32,16 +43,6 @@ This project includes snippets and launch configurations to make coding more jol
 1. Use `aocday` snippet to create a new day's solution
 2. Use `aoctest` snippet to create matching tests
 3. Use the Run and Debug view to execute solutions with a festive UI!
-
-## 🧝‍♂️ Directory Structure
-
-Each day's puzzle has its own directory:
-
-```
-dayXX/
-  ├── input.txt   # Your puzzle input
-  └── sample.txt  # Sample input for testing
-```
 
 ## 🎯 Progress
 
@@ -76,7 +77,6 @@ Throughout this journey, we're learning and applying functional programming conc
 
 ```bash
 mix test                    # Run all tests
-mix test test/day01_test.exs    # Run specific day's tests
 mix test --only day01      # Run tests tagged with :day01
 mix test --only real       # Run only real input tests
 mix test --exclude real    # Skip real input tests (faster for development)
